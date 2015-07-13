@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="GBK" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="${namespace}">
+
+    <typeAlias alias="${doAlias}" type="${doClass}"/>
+
+
+    <!-- select fields -->
+    <sql id="${namespace_upper}_ALL_FIELDS">
+        ${select_params}
+    </sql>
+
+    <sql id="${namespace_upper}_UPDATE_FIELDS">
+        ${update_params}
+    </sql>
+
+    <!-- condition -->
+    <sql id="${namespace_upper}_DYNAMIC_QUERY_CONDITION">
+       where
+        <dynamic>
+              ${query_conditons}
+            <isNotEmpty prepend="and" property="startDate">
+                <![CDATA[
+            	DATE >= #startDate#
+            	]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="endDate">
+                <![CDATA[
+            	DATE < #endDate#
+            	]]>
+            </isNotEmpty>
+
+        </dynamic>
+    </sql>
+
+
+
+    <select id="${namespace}.select" parameterClass="${doAlias}" resultClass="java.util.List">
+        SELECT
+        <include refid="${namespace_upper}_ALL_FIELDS"/>
+        from ${namespace}
+        <include refid="${namespace_upper}_DYNAMIC_QUERY_CONDITION"/>
+    </select>
+
+    <insert id="${namespace}.insert" parameterClass="${doAlias}" >
+        insert into ${namespace}(gmt_create,gmt_modified,${insert_field})
+        values(now(),now(),${insert_field_value})
+        <selectKey keyProperty="id" resultClass="java.lang.Long">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <update id="${namespace}.deleteById" parameterClass="java.lang.Long">
+        update ${namespace} set is_deleted=-1,gmt_modified=now() where id=#id#
+    </update>
+
+    <update id="${namespace}.updateById" parameterClass="${doAlias}">
+        update ${namespace} SET gmt_modified=now()
+        <include refid="${namespace_upper}_UPDATE_FIELDS"/>
+
+    </update>
+</sqlMap>
