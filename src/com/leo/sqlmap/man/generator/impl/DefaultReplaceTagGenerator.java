@@ -2,6 +2,7 @@ package com.leo.sqlmap.man.generator.impl;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import com.leo.sqlmap.man.utils.DOClassUtils;
 import com.leo.sqlmap.man.utils.EntityUtils;
 import com.leo.sqlmap.man.generator.ReplaceTagGenerator;
 
@@ -34,7 +35,7 @@ public class DefaultReplaceTagGenerator implements ReplaceTagGenerator {
         tagMap.put(NAMESPACE, tableName);
         tagMap.put(NAMESPACE_UPPER, toUpperCase(tableName));
         tagMap.put(DO_CLASS, doClassName);
-        tagMap.put(DO_ALIAS, getClassSingleAlias(doClassName));
+        tagMap.put(DO_ALIAS, DOClassUtils.getDOClassAlias(doClassName));
         tagMap.put(SELECT_PARAMS, generateSelectParams(psiClass));
         tagMap.put(UPDATE_PARAMS, generateUpdateParams(psiClass));
         tagMap.put(QUERY_CONDITIONS, generateQueryConditions(psiClass));
@@ -55,18 +56,11 @@ public class DefaultReplaceTagGenerator implements ReplaceTagGenerator {
         return ans.toString();
     }
 
-    private static String getClassSingleAlias(String className) {
-        int index = className.lastIndexOf('.');
-        if (index == -1) {
-            return className;
-        }
-        String singleClassName = className.substring(index + 1);
-        return Character.toLowerCase(singleClassName.charAt(0)) + singleClassName.substring(1);
-    }
+
 
 
     private static String generateSelectParams(PsiClass psiClass) {
-        return  iterateFieldsAction(psiClass, new IterateAction() {
+        String ans = iterateFieldsAction(psiClass, new IterateAction() {
             @Override
             public String extractInfo(PsiField psiField) {
                 StringBuilder ans = new StringBuilder();
@@ -79,7 +73,11 @@ public class DefaultReplaceTagGenerator implements ReplaceTagGenerator {
                 return ans.toString();
             }
         });
-
+        if (ans.length() > 0) {
+            int lastComma = ans.lastIndexOf(',');
+            ans = ans.substring(0, lastComma);
+        }
+        return ans;
     }
 
     private static String generateUpdateParams(PsiClass psiClass) {

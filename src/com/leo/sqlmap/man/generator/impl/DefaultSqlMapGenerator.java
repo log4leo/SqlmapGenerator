@@ -1,6 +1,7 @@
 package com.leo.sqlmap.man.generator.impl;
 
 import com.intellij.psi.PsiClass;
+import com.leo.sqlmap.man.utils.DOClassUtils;
 import com.leo.sqlmap.man.utils.VFSUtils;
 import com.leo.sqlmap.man.generator.ReplaceTagGenerator;
 import com.leo.sqlmap.man.generator.SqlMapGenerator;
@@ -21,9 +22,15 @@ public class DefaultSqlMapGenerator implements SqlMapGenerator {
     private ReplaceTagGenerator replaceTagGenerator = new DefaultReplaceTagGenerator();
 
     @Override
-    public String generateSqlMap(PsiClass psiClass, String tableName) throws Exception{
+    public String generateSqlMap(PsiClass psiClass) throws Exception {
 
-        Map<String, String> tagMap = replaceTagGenerator.generateTag(psiClass, tableName);
+        String fullClassName = psiClass.getQualifiedName();
+        String shortClassName = DOClassUtils.getClassNameWithoutPackage(fullClassName);
+
+        String tableName = DOClassUtils.getTableNameByShortDOClassName(shortClassName);
+
+        final Map<String, String> stringStringMap = replaceTagGenerator.generateTag(psiClass, tableName);
+        Map<String, String> tagMap = stringStringMap;
 
         try {
 

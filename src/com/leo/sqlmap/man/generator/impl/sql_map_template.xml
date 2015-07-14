@@ -52,7 +52,7 @@
     </insert>
 
     <update id="${namespace}.deleteById" parameterClass="java.lang.Long">
-        update ${namespace} set is_deleted=-1,gmt_modified=now() where id=#id#
+        delete from  ${namespace} where id=#id#
     </update>
 
     <update id="${namespace}.updateById" parameterClass="${doAlias}">

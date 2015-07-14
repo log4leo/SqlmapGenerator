@@ -9,6 +9,6 @@ import com.intellij.psi.PsiClass;
  */
 public interface SqlMapGenerator {
 
-    public String generateSqlMap(PsiClass psiClass, String tableName) throws Exception;
+    public String generateSqlMap(PsiClass psiClass) throws Exception;
 
 }
