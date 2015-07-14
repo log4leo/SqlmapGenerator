@@ -19,7 +19,7 @@
 
     <!-- condition -->
     <sql id="${namespace_upper}_DYNAMIC_QUERY_CONDITION">
-       where
+       where  1=1
         <dynamic>
               ${query_conditons}
             <isNotEmpty prepend="and" property="startDate">
