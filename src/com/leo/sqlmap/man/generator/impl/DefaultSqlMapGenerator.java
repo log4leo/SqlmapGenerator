@@ -84,7 +84,7 @@ public class DefaultSqlMapGenerator implements SqlMapGenerator {
 
     private static String getOutputXmlByDoClass(PsiClass psiClass) {
         String packageDirPath = VFSUtils.getDirectoryPathByPsiClass(psiClass);
-        String outputXmlPath = packageDirPath + "/" + psiClass.getName() + "_sql_map.xml";
+        String outputXmlPath = packageDirPath + "/" + DOClassUtils.getTableNameByShortDOClassName(psiClass.getName()) + "_sql_map.xml";
         return outputXmlPath;
     }
 
